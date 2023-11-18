@@ -1,0 +1,21 @@
+[project]
+name = "django-stator"
+authors = [{ name = "Andrew Godwin", email = "andrew@aeracode.org" }]
+description = "A background process worker for Django based on state machines"
+readme = "README.rst"
+requires-python = ">=3.11"
+license = { text = "BSD-3-Clause" }
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = ["Django>=4.0"]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "django_stator.__version__" }
+
+[project.optional-dependencies]
+dev = ["pytest-django~=4.7.0", "pre-commit"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "testapp.settings"
+pythonpath = [".", "tests"]
+django_find_project = false
