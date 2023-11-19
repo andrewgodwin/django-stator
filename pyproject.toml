@@ -16,6 +16,7 @@ version = { attr = "django_stator.__version__" }
 dev = ["pytest-django~=4.7.0", "pre-commit"]
 
 [tool.pytest.ini_options]
+log_level = "INFO"
 DJANGO_SETTINGS_MODULE = "testapp.settings"
 pythonpath = [".", "tests"]
 django_find_project = false

@@ -1,5 +1,6 @@
 # Django Stator
 
+*(this is an in-progress rewrite out of Takahē's stator; do not use yet)*
 
 ## Mechanics
 

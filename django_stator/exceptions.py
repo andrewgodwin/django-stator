@@ -6,3 +6,11 @@ class TryAgainLater(BaseException):
     Equivalent to the state transition check function returning None; this
     just allows it to be more easily done from inner calls.
     """
+
+
+class TimeoutError(BaseException):
+    """
+    Raised in threads to kill them when they time out
+    """
+
+    pass

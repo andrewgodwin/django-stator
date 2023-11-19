@@ -3,13 +3,11 @@ import logging
 from typing import ClassVar, Self
 
 from asgiref.sync import async_to_sync, iscoroutinefunction
-from django.conf import settings
 from django.db import models, transaction
-from django.db.models.signals import class_prepared
 from django.utils import timezone
 from django.utils.functional import classproperty
 
-from django_stator.exceptions import TryAgainLater
+from django_stator.exceptions import TimeoutError, TryAgainLater
 from django_stator.graph import State, StateGraph
 
 logger = logging.getLogger(__name__)
@@ -147,7 +145,7 @@ class StatorModel(models.Model):
                 next_state = async_to_sync(current_state.handler)(self)
             else:
                 next_state = current_state.handler(self)
-        except TryAgainLater:
+        except (TryAgainLater, TimeoutError):
             pass
         except BaseException as e:
             logger.exception(e)

@@ -2,7 +2,11 @@ import logging
 from typing import cast
 
 from django.apps import apps
+from django.conf import settings
 from django.core.management.base import BaseCommand
+
+from django_stator.models import StatorModel
+from django_stator.runner import StatorRunner
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +19,8 @@ class Command(BaseCommand):
             "--concurrency",
             "-c",
             type=int,
-            default=16,
-            help="How many tasks to run at once",
+            default=None,
+            help="How many threads to provision",
         )
         parser.add_argument(
             "--liveness-file",
@@ -43,16 +47,14 @@ class Command(BaseCommand):
     def handle(
         self,
         model_labels: list[str],
-        concurrency: int,
-        liveness_file: str,
-        schedule_interval: int,
-        run_for: int,
         exclude: list[str],
+        run_for: int,
+        liveness_file: str | None = None,
+        concurrency: int = getattr(settings, "STATOR_CONCURRENCY", 10),
         *args,
         **options,
     ):
         # Cache system config
-        Config.system = Config.load_system()
         logging.basicConfig(
             format="[%(asctime)s] %(levelname)8s - %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
@@ -79,10 +81,8 @@ class Command(BaseCommand):
             models,
             concurrency=concurrency,
             liveness_file=liveness_file,
-            schedule_interval=schedule_interval,
-            run_for=run_for,
         )
         try:
-            runner.run()
+            runner.run(run_for=run_for)
         except KeyboardInterrupt:
             logger.critical("Ctrl-C received")
